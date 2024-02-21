@@ -99,30 +99,46 @@ namespace DocMgmnt.Repositories
         }
 
         //GetPredefined URL
-        public async Task<string> GeneratePreSignedUploadUrl(string objectkey)
+        //public async Task<string> GeneratePreSignedUploadUrl(string objectkey)
+        //{
+        //    //The code first creates a presigned url and the uses it to upload
+        //    //an object to an Amazon S3 bucket using that URL
+        //    string url = string.Empty;
+        //    AmazonS3Client client = new AmazonS3Client();
+
+        //    try
+        //    {
+        //        var request = new GetPreSignedUrlRequest();
+        //        request.BucketName = _awsBucketName;
+        //        request.Key = objectkey;
+        //        request.Verb = HttpVerb.PUT;
+
+        //        // url = _s3Client.GetPreSignedURL(request);
+        //        // url = _client.GetPreSignedURL(request);
+        //        url = _amazonS3Client.GetPreSignedURL(request);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //    return url;
+        //}
+
+        public async Task<string> GeneratePreSignedUploadUrl(string objectkey, IAmazonS3 client,string BucketName)
         {
-            //The code first creates a presigned url and the uses it to upload
-            //an object to an Amazon S3 bucket using that URL
-            string url = string.Empty;
-            AmazonS3Client client = new AmazonS3Client();
-
-            try
+            var request = new GetPreSignedUrlRequest
             {
-                var request = new GetPreSignedUrlRequest();
-                request.BucketName = _awsBucketName;
-                request.Key = objectkey;
-                request.Verb = HttpVerb.PUT;
+                BucketName = _awsBucketName,
+                Key = objectkey,
+                Verb = HttpVerb.PUT,
 
-                // url = _s3Client.GetPreSignedURL(request);
-                // url = _client.GetPreSignedURL(request);
-                url = _amazonS3Client.GetPreSignedURL(request);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            };
+
+            string url = client.GetPreSignedURL(request);
             return url;
+              
         }
+
 
     }
 

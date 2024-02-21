@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using DocMgmnt.Models;
 using DocMgmnt.Interface;
 using System.Reflection.Metadata;
+using Amazon.S3;
 
 namespace DocMgmnt.Controllers
 {
@@ -29,11 +30,13 @@ namespace DocMgmnt.Controllers
 
         // GET: api/<DocumentController>
         [HttpGet("file")]
-        public async Task<string> GeneratePreSignedUploadUrl([FromQuery] string file)
+        //  public async Task<string> GeneratePreSignedUploadUrl([FromQuery] string file)
+        public async Task<string> GeneratePreSignedUploadUrl(string objectkey, IAmazonS3 client,string BucketName)
         {
             try
             {
-                string response = await _documentHandler.GeneratePreSignedUploadUrl(file);
+                //string response = await _documentHandler.GeneratePreSignedUploadUrl(file);
+                string response = await _documentHandler.GeneratePreSignedUploadUrl(objectkey, client,BucketName);
 
                 return response;
             }

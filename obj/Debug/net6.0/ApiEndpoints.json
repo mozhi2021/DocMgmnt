@@ -233,7 +233,17 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "file",
+        "Name": "objectkey",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "client",
+        "Type": "Amazon.S3.IAmazonS3",
+        "IsRequired": true
+      },
+      {
+        "Name": "BucketName",
         "Type": "System.String",
         "IsRequired": false
       }

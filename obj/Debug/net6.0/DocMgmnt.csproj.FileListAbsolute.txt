@@ -103,3 +103,4 @@ C:\Users\User\Desktop\MyGDrive\MyGitHub\DocMgmnt\DocMgmnt\bin\Debug\net6.0\Amazo
 C:\Users\User\Desktop\MyGDrive\MyGitHub\DocMgmnt\DocMgmnt\bin\Debug\net6.0\AWSSDK.KeyManagementService.dll
 C:\Users\User\Desktop\MyGDrive\MyGitHub\DocMgmnt\DocMgmnt\bin\Debug\net6.0\BouncyCastle.Crypto.dll
 C:\Users\User\Desktop\MyGDrive\MyGitHub\DocMgmnt\DocMgmnt\obj\Debug\net6.0\DocMgmnt.csproj.Up2Date
+C:\Users\User\Desktop\MyGDrive\MyGitHub\DocMgmnt\DocMgmnt\obj\Debug\net6.0\DocMgmnt.sourcelink.json
