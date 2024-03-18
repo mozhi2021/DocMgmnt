@@ -4,8 +4,10 @@ namespace DocMgmnt.Models
 {
     public class DocItem
     {
-        [Key]
+       
         public IFormFile? File { get; set; }
+
+        public string? PresignedURL { get; set; }
 
     }
 }

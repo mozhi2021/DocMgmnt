@@ -11,8 +11,7 @@ namespace DocMgmnt.Interface
 
         public Task<string> MoveAllDocumentAsync();
 
-        //public Task<string> GeneratePreSignedUploadUrl(string objectkey);
+        public string GeneratePreSignedUrl(string objectkey);
 
-        public Task<string> GeneratePreSignedUploadUrl(string objectkey, IAmazonS3 client,string BucketName);
     }
 }

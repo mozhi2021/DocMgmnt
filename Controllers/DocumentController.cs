@@ -18,33 +18,29 @@ namespace DocMgmnt.Controllers
             _documentHandler = documentHandler;
         }
 
-        // GET: api/<DocumentController>
+
+       //// GET: api/<DocumentController>
+       // [HttpGet]
+       // public string Get()
+       // {
+
+       //     Console.WriteLine("Hello World!!");
+
+       //     return "Console Posted";
+       // }
+
+
         [HttpGet]
-        public string Get()
+        public string GeneratePreSignedUrl( string fileName)
         {
+           // var entry = new DocItem();
 
-            Console.WriteLine("Hello World!!");
+            //entry.PresignedURL = _documentHandler.GeneratePreSignedUrl(fileName);
+            string  url = _documentHandler.GeneratePreSignedUrl(fileName);
 
-            return "Console Posted";
+            return url;
         }
 
-        // GET: api/<DocumentController>
-        [HttpGet("file")]
-        //  public async Task<string> GeneratePreSignedUploadUrl([FromQuery] string file)
-        public async Task<string> GeneratePreSignedUploadUrl(string objectkey, IAmazonS3 client,string BucketName)
-        {
-            try
-            {
-                //string response = await _documentHandler.GeneratePreSignedUploadUrl(file);
-                string response = await _documentHandler.GeneratePreSignedUploadUrl(objectkey, client,BucketName);
-
-                return response;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
 
         // POST api/<DocumentController>
         [HttpPost]
@@ -64,7 +60,7 @@ namespace DocMgmnt.Controllers
             }
         }
 
-        // POST api/<DocumentController>/5
+        // POST api/<DocumentController>
         [HttpPost("{file}")]
         public async Task<string> MoveDocumentAsync(string file)
         {
@@ -79,10 +75,9 @@ namespace DocMgmnt.Controllers
                 throw;
 
             }
-
         }
 
-        //// PUT api/<DocumentController>/5
+        //// PUT api/<DocumentController>
         //[HttpPut("{file}")]
         //public async Task<string> MoveDocumentAsync(string file)
         //{
@@ -101,7 +96,7 @@ namespace DocMgmnt.Controllers
         //}
 
 
-        // PUT api/<DocumentController>/5
+        // PUT api/<DocumentController>
         [HttpPut]
         public async Task<string> MoveAllDocumentAsync()
         {
@@ -120,7 +115,7 @@ namespace DocMgmnt.Controllers
         }
 
 
-        // DELETE api/<DocController>/5
+        // DELETE api/<DocController>
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

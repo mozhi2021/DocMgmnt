@@ -1,10 +1,13 @@
-﻿using Amazon.S3.Model;
+﻿using Amazon;
 using Amazon.S3;
+using Amazon.S3.Model;
 using Microsoft.Extensions.Options;
 using DocMgmnt.Interface;
 using DocMgmnt.Models;
 using System.Diagnostics.Metrics;
 using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
+using Amazon.Runtime;
+using Microsoft.AspNetCore.Routing;
 
 namespace DocMgmnt.Repositories
 {
@@ -14,13 +17,14 @@ namespace DocMgmnt.Repositories
         private readonly string _awssourceBucketName;
         private readonly string? _awsdestinationBucketName;
         private readonly IConfiguration _configuration;
-        private readonly AmazonS3Client _amazonS3Client;
+        private readonly IAmazonS3 _amazonS3Client;
 
-        public DocumentHandler(IOptions<AWSConfig> awsConfig)
+        public DocumentHandler(IOptions<AWSConfig> awsConfig, IAmazonS3 amazonS3Client)
         {
             _awsBucketName = awsConfig.Value.BucketName;
             _awssourceBucketName = awsConfig?.Value.sourceBucketName;
-            _awsdestinationBucketName = awsConfig?.Value.destinationBucketName;
+           _awsdestinationBucketName = awsConfig?.Value.destinationBucketName;
+            _amazonS3Client = amazonS3Client;
         }
 
         //Upload file to S3 bucket
@@ -29,7 +33,6 @@ namespace DocMgmnt.Repositories
             string awsRequestID = string.Empty;
             var stream = item.File.OpenReadStream();
             var fileNameInS3Bucket = item.File.FileName;
-            //string sourceObjectKey = item;
 
             AmazonS3Client client = new AmazonS3Client();
             var request = new PutObjectRequest()
@@ -68,8 +71,8 @@ namespace DocMgmnt.Repositories
                 DestinationBucket = _awsdestinationBucketName,
                 DestinationKey = destinationObjectKey,
             };
-
             var response = await client.CopyObjectAsync(request);
+            //var response = await _amazonS3Client.CopyObjectAsync(request);
             awsRequestID = response.ResponseMetadata.RequestId.ToString();
             return awsRequestID;
         }
@@ -98,48 +101,30 @@ namespace DocMgmnt.Repositories
             return counter.ToString() + " files are moved";
         }
 
-        //GetPredefined URL
-        //public async Task<string> GeneratePreSignedUploadUrl(string objectkey)
-        //{
-        //    //The code first creates a presigned url and the uses it to upload
-        //    //an object to an Amazon S3 bucket using that URL
-        //    string url = string.Empty;
-        //    AmazonS3Client client = new AmazonS3Client();
-
-        //    try
-        //    {
-        //        var request = new GetPreSignedUrlRequest();
-        //        request.BucketName = _awsBucketName;
-        //        request.Key = objectkey;
-        //        request.Verb = HttpVerb.PUT;
-
-        //        // url = _s3Client.GetPreSignedURL(request);
-        //        // url = _client.GetPreSignedURL(request);
-        //        url = _amazonS3Client.GetPreSignedURL(request);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //    return url;
-        //}
-
-        public async Task<string> GeneratePreSignedUploadUrl(string objectkey, IAmazonS3 client,string BucketName)
+        public string GeneratePreSignedUrl(string objectkey)
         {
-            var request = new GetPreSignedUrlRequest
+            //The code first creates a presigned url and the uses it to upload
+            //an object to an Amazon S3 bucket using that URL
+
+            string url = string.Empty;
+            AmazonS3Client client = new AmazonS3Client();
+
+            try
             {
-                BucketName = _awsBucketName,
-                Key = objectkey,
-                Verb = HttpVerb.PUT,
-
-            };
-
-            string url = client.GetPreSignedURL(request);
+                AWSConfigsS3.UseSignatureVersion4 = true;
+                var request = new GetPreSignedUrlRequest(); //create a copy object request
+                request.BucketName = _awsBucketName;
+                request.Key = objectkey;
+                request.Verb = HttpVerb.PUT;
+              //request.Expires = DateTime.UtcNow.AddDays(3);
+                url = _amazonS3Client.GetPreSignedURL(request); //get path for request
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
             return url;
-              
         }
 
-
     }
-
 }

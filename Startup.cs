@@ -2,6 +2,7 @@ using DocMgmnt.Interface;
 using DocMgmnt.Repositories;
 using DocMgmnt.Models;
 using DocMgmnt.Middleware;
+using Amazon.S3;
 
 namespace DocMgmnt;
 
@@ -20,8 +21,8 @@ public class Startup
         var builder = WebApplication.CreateBuilder();
 
         services.AddControllers();
-        services.AddScoped<IDocumentHandler, DocumentHandler>();
-        services.AddScoped<IApiHandler, ApiHandler>();
+
+        //services.Configure<AWSConfig>(builder.Configuration.GetSection("AWSCredentials"));
 
         services.Configure<AWSConfig>(builder.Configuration.GetSection("DevAwsObjects"));
         services.AddCors(options => options.AddDefaultPolicy(
@@ -32,6 +33,9 @@ public class Startup
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        services.AddAWSService<IAmazonS3>();
+        services.AddScoped<IDocumentHandler, DocumentHandler>();
+        services.AddScoped<IApiHandler, ApiHandler>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -49,7 +53,7 @@ public class Startup
 
         app.UseHttpsRedirection();
 
-        app.UseRouting();         
+        app.UseRouting();
 
         app.UseAuthorization();
 
